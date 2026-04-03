@@ -1,6 +1,6 @@
 # 🧠 Clash of Imaan – Quiz & Challenge App
 
-A React Native quiz application featuring real-time gameplay, daily challenges, monthly competitions, and 1v1 quiz battles.
+A React Native quiz application featuring real-time gameplay, daily challenges, monthly competitions, and realtime 1v1 quiz battles.
 
 ---
 
@@ -13,6 +13,7 @@ A React Native quiz application featuring real-time gameplay, daily challenges, 
 - 🔔 Notifications
 - 👤 User profile management
 - ⚙️ Admin panel for quiz control
+- 🕌 Location based sehri and iftar times
 
 ---
 
@@ -20,8 +21,10 @@ A React Native quiz application featuring real-time gameplay, daily challenges, 
 
 - React Native CLI
 - JavaScript
-- Firebase (if used)
+- Firebase
 - AsyncStorage
+- OneSignal (Push Notifications and in app notification)
+- geolocation
 
 ---
 
@@ -87,3 +90,4 @@ This project is not publicly distributed as an APK. It is intended for demonstra
 ## 👨‍💻 Author
 
 Abrar Ahmed
+[LinkedIn](https://www.linkedin.com/in/abrar-ahmed-mca/)
