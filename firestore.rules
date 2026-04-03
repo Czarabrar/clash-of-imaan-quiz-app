@@ -1,0 +1,107 @@
+// ============================================
+// Firestore Security Rules
+// ============================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: check if user is authenticated
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Helper: check if user is admin (reads role from users collection)
+    function isAdmin() {
+      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Helper: check if user is the document owner
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuth();
+      allow create: if isOwner(userId);
+      // Owner can update their own doc; Admin can update any user (e.g., totalOverallPoints, marathonEligible)
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Quizzes collection
+    match /quizzes/{quizId} {
+      allow read: if isAuth();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Quiz Responses collection
+    match /quizResponses/{responseId} {
+      allow read: if isAuth();
+      // Users can only create their own response
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      // Admin can update (to write rank and awardedPoints on End Quiz); users cannot update their own response
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    // Challenges collection
+    match /challenges/{challengeId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && request.resource.data.challengerId == request.auth.uid;
+      allow update: if isAuth() && (
+        resource.data.challengerId == request.auth.uid ||
+        resource.data.opponentId == request.auth.uid
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Challenge Responses collection (Legacy)
+    match /challengeResponses/{responseId} {
+      allow read: if isAuth();
+      allow create, update: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // Arena Challenges collection (New)
+    match /arenaChallenges/{challengeId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && request.resource.data.challengerId == request.auth.uid;
+      allow update: if isAuth() && (
+        resource.data.challengerId == request.auth.uid ||
+        resource.data.opponentId == request.auth.uid
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Arena Responses collection (New)
+    match /arenaResponses/{responseId} {
+      allow read: if isAuth();
+      allow create, update: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // Meta collection (serverTime, marathonSettings)
+    match /meta/{document=**} {
+      allow read: if isAuth();
+      // Only admin can write marathon settings; serverTime is written server-side
+      allow write: if isAdmin();
+    }
+
+    // Marathon Quizzes collection
+    match /marathonQuizzes/{quizId} {
+      allow read: if isAuth();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Marathon Responses collection
+    match /marathonResponses/{responseId} {
+      allow read: if isAuth();
+      // Users create their own response
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      // No updates allowed from users; admin doesn't need to update these
+      allow update, delete: if isAdmin();
+    }
+  }
+}

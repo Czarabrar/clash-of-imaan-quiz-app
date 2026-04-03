@@ -1,0 +1,11 @@
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+rootProject.name = 'com.clashofimaan'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
+
+// Manually include react-native-worklets (required by react-native-reanimated 4.x)
+// It is not auto-linked because it lacks a react-native.config.js
+include ':react-native-worklets'
+project(':react-native-worklets').projectDir = new File('../node_modules/react-native-worklets/android')
