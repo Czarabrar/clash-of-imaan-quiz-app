@@ -73,9 +73,11 @@ A React Native quiz application featuring real-time gameplay, daily challenges, 
 </p>
 ---
 
-## 🤔 What I Built
+## 🤔 What and Why I Built this
 
-Developed a quiz platform with competitive gameplay including 1v1 battles, daily challenges, and leaderboard tracking.
+Developed a quiz platform designed to encourage engagement within small groups and families through interactive gameplay.
+
+Inspired by the idea of creating meaningful and fun interactions during occasions like Ramadan, the app enables daily challenges, 1v1 battles, and shared participation between different age groups.
 
 Focused on handling dynamic quiz flows, real-time interactions, and user engagement through structured scoring and challenge systems.
 
